@@ -8,6 +8,12 @@ DOWNLOAD_URL = "https://api.sketchfab.com/v3/models/{}/download"
 
 
 def _get_download_url(uid):
+    """Get download url for a model.
+
+    Keyword arguments:
+    uid -- The unique identifier of the model.
+    """
+
     print(f"Getting download url for uid {uid}")
     r = requests.get(
         DOWNLOAD_URL.format(uid),
@@ -17,7 +23,11 @@ def _get_download_url(uid):
         },
     )
 
-    data = r.json()
+    data = None
+    try:
+        data = r.json()
+    except ValueError:
+        pass
 
     assert r.ok, f"Failed to get download url for model {uid}: {r.status_code} - {data}"
 
@@ -34,6 +44,13 @@ def _get_download_url(uid):
 
 
 def download_model(model_uid, file_path):
+    """Download a model.
+
+    Keyword arguments:
+    model_uid -- The unique identifier of the model.
+    file_path -- The folder to store the downloaded model to. 
+    """
+
     data = _get_download_url(model_uid)
 
     # Construct path to same directory as download destination
